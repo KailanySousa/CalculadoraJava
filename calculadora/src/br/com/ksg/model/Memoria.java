@@ -41,6 +41,10 @@ public class Memoria {
 			this.textoBuffer = "";
 			this.substituir = false;
 			this.ultimaOperacao = null;
+		} else if(comando == Comandos.SINAL) {
+				
+			this.textoAtual = this.textoAtual.contains("-") ? this.textoAtual.substring(1) : "-" + this.textoAtual;
+			
 		} else if(comando == Comandos.NUMERO || comando == Comandos.VIRGULA) {
 			this.textoAtual = this.substituir ? texto : this.textoAtual + texto;
 			this.substituir = false;
@@ -55,7 +59,7 @@ public class Memoria {
 	}
 
 	private String obterResultadoOperacao() {
-		if(this.ultimaOperacao == null) return this.textoAtual;
+		if(this.ultimaOperacao == null || this.ultimaOperacao == Comandos.IGUAL) return this.textoAtual;
 		
 		double numeroBuffer = Double.parseDouble(this.textoBuffer.replace(",", "."));
 		double numeroAtual = Double.parseDouble(this.textoAtual.replace(",", "."));
@@ -108,6 +112,8 @@ public class Memoria {
 			case "-":
 				return Comandos.SUB;
 			case "=":
+				return Comandos.SUB;
+			case "±":
 				return Comandos.SUB;
 			default:
 				if(!this.textoAtual.contains(",")) return Comandos.VIRGULA;
