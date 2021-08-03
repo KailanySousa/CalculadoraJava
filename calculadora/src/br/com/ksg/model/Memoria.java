@@ -45,10 +45,44 @@ public class Memoria {
 			this.textoAtual = this.substituir ? texto : this.textoAtual + texto;
 			this.substituir = false;
 		} else {
-			
+			this.substituir = true;
+			this.textoAtual = this.obterResultadoOperacao();
+			this.textoBuffer = this.getTextoAtual();
+			this.ultimaOperacao = comando;
 		}
 	
 		this.observers.forEach(o -> o.valorAlterado(this.getTextoAtual()));
+	}
+
+	private String obterResultadoOperacao() {
+		if(this.ultimaOperacao == null) return this.textoAtual;
+		
+		double numeroBuffer = Double.parseDouble(this.textoBuffer.replace(",", "."));
+		double numeroAtual = Double.parseDouble(this.textoAtual.replace(",", "."));
+		
+		double resultado = 0;
+		
+		switch (this.ultimaOperacao) {
+		case SOMA:
+			resultado = numeroBuffer + numeroAtual;
+			break;
+		case SUB:
+			resultado = numeroBuffer - numeroAtual;
+			break;
+		case MULT:
+			resultado = numeroBuffer * numeroAtual;
+			break;
+		case DIV:
+			resultado = numeroBuffer / numeroAtual;
+			break;
+		default:
+			break;
+		}
+		
+		String resultadoString = Double.toString(resultado).replace(".", ",");
+		boolean inteiro = resultadoString.endsWith(",0");
+		
+		return inteiro ? resultadoString.replace(",0", "") : resultadoString;
 	}
 
 	private Comandos detectarComando(String texto) {
