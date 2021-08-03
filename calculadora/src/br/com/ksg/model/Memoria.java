@@ -27,15 +27,48 @@ public class Memoria {
 		return this.textoAtual.isEmpty() ? "0" : this.textoAtual;
 	}
 	
-	public void processarComando(String valor) {
+	public void processarComando(String texto) {
 		
-		if("AC".equals(valor)) {
+		Comandos comando = detectarComando(texto);
+		
+		
+		if("AC".equals(texto)) {
 			this.textoAtual = "";
 		} else {
-			this.textoAtual += valor;			
+			this.textoAtual += texto;			
 		}
 		
 		this.observers.forEach(o -> o.valorAlterado(this.getTextoAtual()));
+	}
+
+	private Comandos detectarComando(String texto) {
+		if(this.textoAtual.isEmpty() && texto.equals("0")) {
+			return null;
+		}
+		
+		try {
+			Integer.parseInt(texto);
+			return Comandos.NUMERO;
+		} catch (NumberFormatException e) {
+			// quando não for numero
+			
+			switch (texto) {
+			case "AC":
+				return Comandos.ZERAR;
+			case "/":
+				return Comandos.DIV;
+			case "*":
+				return Comandos.MULT;
+			case "+":
+				return Comandos.SOMA;
+			case "-":
+				return Comandos.SUB;
+			case "=":
+				return Comandos.SUB;
+			default:
+				return Comandos.VIRGULA;
+			}
+		}
 	}
 
 }
