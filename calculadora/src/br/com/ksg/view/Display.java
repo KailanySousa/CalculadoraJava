@@ -7,9 +7,11 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import br.com.ksg.model.Memoria;
+
 public class Display extends JPanel {
 	
-	private JLabel label = new JLabel();
+	private JLabel label = new JLabel(Memoria.getInstancia().getTextoAtual());
 
 	public Display() {
 		
