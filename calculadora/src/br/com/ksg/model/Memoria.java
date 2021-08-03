@@ -8,8 +8,12 @@ import br.com.ksg.observer.MemoriaObserver;
 public class Memoria {
 	
 	private static final Memoria instancia = new Memoria();
-	private String textoAtual = "";
 	private final List<MemoriaObserver> observers = new ArrayList<>();
+	
+	private String textoAtual = "";
+	private String textoBuffer = "";
+	private boolean substituir = false;
+	private Comandos ultimaOperacao;
 
 	private Memoria() {
 		
@@ -30,14 +34,20 @@ public class Memoria {
 	public void processarComando(String texto) {
 		
 		Comandos comando = detectarComando(texto);
-		
-		
-		if("AC".equals(texto)) {
+		if(comando == null) {
+			return;
+		} else if(comando == Comandos.ZERAR) {
 			this.textoAtual = "";
+			this.textoBuffer = "";
+			this.substituir = false;
+			this.ultimaOperacao = null;
+		} else if(comando == Comandos.NUMERO || comando == Comandos.VIRGULA) {
+			this.textoAtual = this.substituir ? texto : this.textoAtual + texto;
+			this.substituir = false;
 		} else {
-			this.textoAtual += texto;			
+			
 		}
-		
+	
 		this.observers.forEach(o -> o.valorAlterado(this.getTextoAtual()));
 	}
 
@@ -66,9 +76,10 @@ public class Memoria {
 			case "=":
 				return Comandos.SUB;
 			default:
-				return Comandos.VIRGULA;
+				if(!this.textoAtual.contains(",")) return Comandos.VIRGULA;
 			}
 		}
+		return null;
 	}
 
 }
