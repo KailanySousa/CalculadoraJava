@@ -8,12 +8,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import br.com.ksg.model.Memoria;
+import br.com.ksg.observer.MemoriaObserver;
 
-public class Display extends JPanel {
+public class Display extends JPanel implements MemoriaObserver {
 	
 	private JLabel label = new JLabel(Memoria.getInstancia().getTextoAtual());
 
 	public Display() {
+		
+		Memoria.getInstancia().setObservers(this);
 		
 		setBackground(new Color(46, 49,50));
 		this.label.setForeground(Color.WHITE);
@@ -31,6 +34,13 @@ public class Display extends JPanel {
 
 	public void setLabel(JLabel label) {
 		this.label = label;
+	}
+
+	@Override
+	public void valorAlterado(String novoValor) {
+		
+		this.label.setText(novoValor);
+		
 	}
 
 }
