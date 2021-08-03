@@ -34,6 +34,7 @@ public class Memoria {
 	public void processarComando(String texto) {
 		
 		Comandos comando = detectarComando(texto);
+		System.out.println(comando);
 		if(comando == null) {
 			return;
 		} else if(comando == Comandos.ZERAR) {
@@ -51,9 +52,13 @@ public class Memoria {
 		} else {
 			this.substituir = true;
 			this.textoAtual = this.obterResultadoOperacao();
-			this.textoBuffer = this.getTextoAtual();
+			this.textoBuffer = this.textoAtual;
 			this.ultimaOperacao = comando;
 		}
+		
+		System.out.println(this.textoAtual);
+		System.out.println(this.textoBuffer);
+		
 	
 		this.observers.forEach(o -> o.valorAlterado(this.getTextoAtual()));
 	}
@@ -112,7 +117,7 @@ public class Memoria {
 			case "-":
 				return Comandos.SUB;
 			case "=":
-				return Comandos.SUB;
+				return Comandos.IGUAL;
 			case "±":
 				return Comandos.SUB;
 			default:
