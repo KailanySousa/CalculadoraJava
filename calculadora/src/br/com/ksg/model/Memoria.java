@@ -34,31 +34,33 @@ public class Memoria {
 	public void processarComando(String texto) {
 		
 		Comandos comando = detectarComando(texto);
-		System.out.println(comando);
+		
 		if(comando == null) {
 			return;
 		} else if(comando == Comandos.ZERAR) {
+			
 			this.textoAtual = "";
 			this.textoBuffer = "";
 			this.substituir = false;
 			this.ultimaOperacao = null;
-		} else if(comando == Comandos.SINAL) {
-				
-			this.textoAtual = this.textoAtual.contains("-") ? this.textoAtual.substring(1) : "-" + this.textoAtual;
 			
+		} else if(comando == Comandos.SINAL) {
+			
+			this.textoAtual = this.textoAtual.contains("-") ? this.textoAtual.substring(1) : "-" + this.textoAtual;
+		
 		} else if(comando == Comandos.NUMERO || comando == Comandos.VIRGULA) {
+			
 			this.textoAtual = this.substituir ? texto : this.textoAtual + texto;
 			this.substituir = false;
+			
 		} else {
+			
 			this.substituir = true;
 			this.textoAtual = this.obterResultadoOperacao();
 			this.textoBuffer = this.textoAtual;
 			this.ultimaOperacao = comando;
+			
 		}
-		
-		System.out.println(this.textoAtual);
-		System.out.println(this.textoBuffer);
-		
 	
 		this.observers.forEach(o -> o.valorAlterado(this.getTextoAtual()));
 	}
@@ -84,6 +86,9 @@ public class Memoria {
 		case DIV:
 			resultado = numeroBuffer / numeroAtual;
 			break;
+		case PORCENTO:
+			resultado = numeroBuffer * (numeroAtual / 100); 
+			break;
 		default:
 			break;
 		}
@@ -108,6 +113,8 @@ public class Memoria {
 			switch (texto) {
 			case "AC":
 				return Comandos.ZERAR;
+			case "%":
+				return Comandos.PORCENTO;
 			case "/":
 				return Comandos.DIV;
 			case "*":
